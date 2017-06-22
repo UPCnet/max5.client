@@ -1,5 +1,5 @@
 ====================
-base5.core
+max5.client
 ====================
 
 User documentation

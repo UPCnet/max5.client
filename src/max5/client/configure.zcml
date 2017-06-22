@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
-    i18n_domain="base5.core">
+    i18n_domain="max5.client">
 
   <i18n:registerTranslations directory="locales" />
 
@@ -13,18 +13,18 @@
 
   <genericsetup:registerProfile
       name="default"
-      title="base5.core"
+      title="max5.client"
       directory="profiles/default"
-      description="Installs the base5.core add-on."
+      description="Installs the max5.client add-on."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       post_handler=".setuphandlers.post_install"
       />
 
   <genericsetup:registerProfile
       name="uninstall"
-      title="base5.core (uninstall)"
+      title="max5.client (uninstall)"
       directory="profiles/uninstall"
-      description="Uninstalls the base5.core add-on."
+      description="Uninstalls the max5.client add-on."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       post_handler=".setuphandlers.uninstall"
       />
@@ -32,6 +32,6 @@
 
   <utility
       factory=".setuphandlers.HiddenProfiles"
-      name="base5.core-hiddenprofiles" />
+      name="max5.client-hiddenprofiles" />
 
 </configure>

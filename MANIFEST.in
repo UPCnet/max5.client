@@ -1,4 +1,4 @@
-graft src/base5
+graft src/max5
 graft docs
 include *.rst
 global-exclude *.pyc

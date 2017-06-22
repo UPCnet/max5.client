@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.app.testing import ROBOT_TEST_LEVEL
 from plone.testing import layered
-from base5.core.testing import BASE5_CORE_ACCEPTANCE_TESTING  # noqa
+from max5.client.testing import MAX5_CLIENT_ACCEPTANCE_TESTING  # noqa
 
 import os
 import robotsuite
@@ -22,7 +22,7 @@ def test_suite():
         suite.addTests([
             layered(
                 robottestsuite,
-                layer=BASE5_CORE_ACCEPTANCE_TESTING
+                layer=MAX5_CLIENT_ACCEPTANCE_TESTING
             ),
         ])
     return suite

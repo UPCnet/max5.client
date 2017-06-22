@@ -1,6 +1,6 @@
 [report]
 include =
-    src/base5/*
+    src/max5/*
 omit =
     */test*
     */upgrades/*

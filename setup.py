@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Installer for the base5.core package."""
+"""Installer for the max5.client package."""
 
 from setuptools import find_packages
 from setuptools import setup
@@ -13,9 +13,9 @@ long_description = '\n\n'.join([
 
 
 setup(
-    name='base5.core',
+    name='max5.client',
     version='1.0a1',
-    description="Base Genweb, Ulearn, etc Plone 5",
+    description="Client library wrapper to access MAX API Plone %",
     long_description=long_description,
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -30,10 +30,10 @@ setup(
     keywords='Python Plone',
     author='Plone Team',
     author_email='plone.team@upcnet.es',
-    url='https://pypi.python.org/pypi/base5.core',
+    url='https://pypi.python.org/pypi/max5.client',
     license='GPL version 2',
     packages=find_packages('src', exclude=['ez_setup']),
-    namespace_packages=['base5'],
+    namespace_packages=['max5'],
     package_dir={'': 'src'},
     include_package_data=True,
     zip_safe=False,

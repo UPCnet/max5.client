@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """Setup tests for this package."""
 from plone import api
-from base5.core.testing import BASE5_CORE_INTEGRATION_TESTING  # noqa
+from max5.client.testing import MAX5_CLIENT_INTEGRATION_TESTING  # noqa
 
 import unittest
 
 
 class TestSetup(unittest.TestCase):
-    """Test that base5.core is properly installed."""
+    """Test that max5.client is properly installed."""
 
-    layer = BASE5_CORE_INTEGRATION_TESTING
+    layer = MAX5_CLIENT_INTEGRATION_TESTING
 
     def setUp(self):
         """Custom shared utility setup for tests."""
@@ -17,35 +17,35 @@ class TestSetup(unittest.TestCase):
         self.installer = api.portal.get_tool('portal_quickinstaller')
 
     def test_product_installed(self):
-        """Test if base5.core is installed."""
+        """Test if max5.client is installed."""
         self.assertTrue(self.installer.isProductInstalled(
-            'base5.core'))
+            'max5.client'))
 
     def test_browserlayer(self):
-        """Test that IBase5CoreLayer is registered."""
-        from base5.core.interfaces import (
-            IBase5CoreLayer)
+        """Test that IMax5ClientLayer is registered."""
+        from max5.client.interfaces import (
+            IMax5ClientLayer)
         from plone.browserlayer import utils
-        self.assertIn(IBase5CoreLayer, utils.registered_layers())
+        self.assertIn(IMax5ClientLayer, utils.registered_layers())
 
 
 class TestUninstall(unittest.TestCase):
 
-    layer = BASE5_CORE_INTEGRATION_TESTING
+    layer = MAX5_CLIENT_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']
         self.installer = api.portal.get_tool('portal_quickinstaller')
-        self.installer.uninstallProducts(['base5.core'])
+        self.installer.uninstallProducts(['max5.client'])
 
     def test_product_uninstalled(self):
-        """Test if base5.core is cleanly uninstalled."""
+        """Test if max5.client is cleanly uninstalled."""
         self.assertFalse(self.installer.isProductInstalled(
-            'base5.core'))
+            'max5.client'))
 
     def test_browserlayer_removed(self):
-        """Test that IBase5CoreLayer is removed."""
-        from base5.core.interfaces import \
-            IBase5CoreLayer
+        """Test that IMax5ClientLayer is removed."""
+        from max5.client.interfaces import \
+            IMax5ClientLayer
         from plone.browserlayer import utils
-        self.assertNotIn(IBase5CoreLayer, utils.registered_layers())
+        self.assertNotIn(IMax5ClientLayer, utils.registered_layers())

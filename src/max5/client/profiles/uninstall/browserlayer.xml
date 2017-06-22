@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layers>
   <layer
-      name="base5.core"
+      name="max5.client"
       remove="true"
       />
 </layers>

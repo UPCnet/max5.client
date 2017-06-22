@@ -3,4 +3,4 @@
 
 from zope.i18nmessageid import MessageFactory
 
-_ = MessageFactory('base5.core')
+_ = MessageFactory('max5.client')

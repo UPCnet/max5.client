@@ -3,7 +3,7 @@
    This text does not appear on pypi or github. It is a comment.
 
 ==============================================================================
-base5.core
+max5.client
 ==============================================================================
 
 Tell me what your product does
@@ -38,14 +38,14 @@ This product has been translated into
 Installation
 ------------
 
-Install base5.core by adding it to your buildout::
+Install max5.client by adding it to your buildout::
 
     [buildout]
 
     ...
 
     eggs =
-        base5.core
+        max5.client
 
 
 and then running ``bin/buildout``
@@ -54,8 +54,8 @@ and then running ``bin/buildout``
 Contribute
 ----------
 
-- Issue Tracker: https://github.com/collective/base5.core/issues
-- Source Code: https://github.com/collective/base5.core
+- Issue Tracker: https://github.com/collective/max5.client/issues
+- Source Code: https://github.com/collective/max5.client
 - Documentation: https://docs.plone.org/foo/bar
 
 

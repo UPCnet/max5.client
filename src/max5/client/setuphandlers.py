@@ -9,7 +9,7 @@ class HiddenProfiles(object):
     def getNonInstallableProfiles(self):
         """Hide uninstall profile from site-creation and quickinstaller"""
         return [
-            'base5.core:uninstall',
+            'max5.client:uninstall',
         ]
 
 

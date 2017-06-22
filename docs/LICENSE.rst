@@ -1,4 +1,4 @@
-base5.core Copyright 2017, Plone Team
+max5.client Copyright 2017, Plone Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 2

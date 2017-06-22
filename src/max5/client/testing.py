@@ -7,10 +7,10 @@ from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
 from plone.testing import z2
 
-import base5.core
+import max5.client
 
 
-class Base5CoreLayer(PloneSandboxLayer):
+class Max5ClientLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
 
@@ -18,32 +18,32 @@ class Base5CoreLayer(PloneSandboxLayer):
         # Load any other ZCML that is required for your tests.
         # The z3c.autoinclude feature is disabled in the Plone fixture base
         # layer.
-        self.loadZCML(package=base5.core)
+        self.loadZCML(package=max5.client)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, 'base5.core:default')
+        applyProfile(portal, 'max5.client:default')
 
 
-BASE5_CORE_FIXTURE = Base5CoreLayer()
+MAX5_CLIENT_FIXTURE = Max5ClientLayer()
 
 
-BASE5_CORE_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(BASE5_CORE_FIXTURE,),
-    name='Base5CoreLayer:IntegrationTesting'
+MAX5_CLIENT_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(MAX5_CLIENT_FIXTURE,),
+    name='Max5ClientLayer:IntegrationTesting'
 )
 
 
-BASE5_CORE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(BASE5_CORE_FIXTURE,),
-    name='Base5CoreLayer:FunctionalTesting'
+MAX5_CLIENT_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(MAX5_CLIENT_FIXTURE,),
+    name='Max5ClientLayer:FunctionalTesting'
 )
 
 
-BASE5_CORE_ACCEPTANCE_TESTING = FunctionalTesting(
+MAX5_CLIENT_ACCEPTANCE_TESTING = FunctionalTesting(
     bases=(
-        BASE5_CORE_FIXTURE,
+        MAX5_CLIENT_FIXTURE,
         REMOTE_LIBRARY_BUNDLE_FIXTURE,
         z2.ZSERVER_FIXTURE
     ),
-    name='Base5CoreLayer:AcceptanceTesting'
+    name='Max5ClientLayer:AcceptanceTesting'
 )

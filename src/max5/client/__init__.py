@@ -1,1 +1,1 @@
-from client import MaxClient
+from max5.client.client import MaxClient

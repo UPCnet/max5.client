@@ -1,5 +1,5 @@
 from max import main
-from client.rest import MaxClient as RestClient
+from max5.client.client.rest import MaxClient as RestClient
 from webtest.app import TestApp
 from StringIO import StringIO
 

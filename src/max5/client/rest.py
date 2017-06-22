@@ -1,13 +1,13 @@
 from copy import deepcopy
 from functools import partial
 from hashlib import sha1
-from client.client import BaseClient
-from client.client import RequestError
-from client.defaults import ENDPOINT_METHOD_DEFAULTS
-from client.resources import RESOURCES as ROUTES
-from client.utils import RUDict
-from client.utils import expand
-from client.utils import patch_send
+from max5.client.client import BaseClient
+from max5.client.client import RequestError
+from max5.client.defaults import ENDPOINT_METHOD_DEFAULTS
+from max5.client.resources import RESOURCES as ROUTES
+from max5.client.utils import RUDict
+from max5.client.utils import expand
+from max5.client.utils import patch_send
 from urllib import urlencode
 
 import json

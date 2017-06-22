@@ -11,6 +11,11 @@ long_description = '\n\n'.join([
     open('CHANGES.rst').read(),
 ])
 
+requires = [
+    'requests'
+]
+
+wsgi_requires = ['max', 'WebTest']
 
 setup(
     name='max5.client',
@@ -37,25 +42,11 @@ setup(
     package_dir={'': 'src'},
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'plone.api',
-        'Products.GenericSetup>=1.8.2',
-        'setuptools',
-        'z3c.jbot',
-    ],
+    install_requires=requires,
+    tests_require=requires,
     extras_require={
-        'test': [
-            'plone.app.testing',
-            # Plone KGS does not use this version, because it would break
-            # Remove if your package shall be part of coredev.
-            # plone_coredev tests as of 2016-04-01.
-            'plone.testing>=5.0.0',
-            'plone.app.contenttypes',
-            'plone.app.robotframework[debug]',
-        ],
+          'wsgi': requires + wsgi_requires
     },
     entry_points="""
-    [z3c.autoinclude.plugin]
-    target = plone
     """,
 )

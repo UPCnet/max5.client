@@ -19,7 +19,7 @@ wsgi_requires = ['max', 'WebTest']
 
 setup(
     name='max5.client',
-    version='1.0a1',
+    version='0.1',
     description="Client library wrapper to access MAX API Plone %",
     long_description=long_description,
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers

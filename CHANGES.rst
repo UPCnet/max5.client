@@ -2,11 +2,12 @@ Changelog
 =========
 
 
-0.2 (unreleased)
+0.2 (2020-11-18)
 ----------------
 
-- Nothing changed yet.
-
+* Nuevos recursos suscripcion notificaciones push por usuario [Pilar Marinas]
+* Turn off email notifications entirely [pilar.marinas]
+* Quitar notificacion travis [pilar.marinas]
 
 0.1 (2018-05-22)
 ----------------

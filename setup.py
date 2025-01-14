@@ -28,7 +28,7 @@ setup(
         "Framework :: Plone",
         "Framework :: Plone :: 5.0",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.8",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     ],
@@ -45,7 +45,7 @@ setup(
     install_requires=requires,
     tests_require=requires,
     extras_require={
-          'wsgi': requires + wsgi_requires
+        'wsgi': requires + wsgi_requires
     },
     entry_points="""
     """,

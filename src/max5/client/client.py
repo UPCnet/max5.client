@@ -14,14 +14,15 @@ DEFAULT_CLIENT_ID = 'MAX'
 
 def get_max_info(max_url):
     try:
-        response = requests.get('{}/info'.format(max_url), verify=False)
+        response = requests.get(f'{max_url}/info', verify=False)
     except requests.exceptions.ConnectionError:
-        raise RequestError(0, "Server {} did not respond. Is this a valid max url?".format(max_url))
+        raise RequestError(
+            0, f"Server {max_url} did not respond. Is this a valid max url?")
 
     if response.status_code == 502:
-        raise RequestError(502, "Server {} responded with 502. Is max running?".format(max_url))
+        raise RequestError(502, f"Server {max_url} responded with 502. Is max running?")
     if response.status_code == 500:
-        raise RequestError(500, "Server {} failed with 500 Internal Error".format(max_url))
+        raise RequestError(500, f"Server {max_url} failed with 500 Internal Error")
 
     elif response.status_code == 200:
         return response.json()
@@ -32,14 +33,15 @@ def get_hub_info(hub_url):
         Returns domains list and information from the given hub
     """
     try:
-        response = requests.get('{}/info'.format(hub_url), verify=False)
+        response = requests.get(f'{hub_url}/info', verify=False)
     except requests.exceptions.ConnectionError:
-        raise RequestError(0, "Server {} did not respond. Is this a valid hub url?".format(hub_url))
+        raise RequestError(
+            0, f"Server {hub_url} did not respond. Is this a valid hub url?")
 
     if response.status_code == 502:
-        raise RequestError(502, "Server {} responded with 502. Is hub running?".format(hub_url))
+        raise RequestError(502, f"Server {hub_url} responded with 502. Is hub running?")
     if response.status_code == 500:
-        raise RequestError(500, "Server {} failed with 500 Internal Error".format(hub_url))
+        raise RequestError(500, f"Server {hub_url} failed with 500 Internal Error")
     elif response.status_code == 200:
         hub_info = response.json()
         return hub_info
@@ -61,19 +63,21 @@ def get_max_url_from_hub_domain(hub_url, domain):
 
     # If domain is not defined and we have a default
     elif default_maxserver:
-        return '{}/{}'.format(default_maxserver, domain)
+        return f'{default_maxserver}/{domain}'
 
     # We have neither of domain or default defined
     else:
-        raise Exception("There's no domain {} on {}".format(domain, hub_url))
+        raise Exception(f"There's no domain {domain} on {hub_url}")
 
 
 class RequestError(Exception):
     """
     """
+
     def __init__(self, code, *args, **kwargs):
         super(RequestError, self).__init__(*args, **kwargs)
         self.code = code
+
 
 BAD_PWD_MSG = """
 Bad username or password.
@@ -126,7 +130,7 @@ class BaseClient(object):
             client = cls(max_server_url, *args, **kwargs)
         except RequestError as exc:
             if exc.code == 0:
-                raise Exception("No maxserver found on {}".format(max_server_url))
+                raise Exception(f"No maxserver found on {max_server_url}")
             else:
                 raise exc
 
@@ -148,7 +152,7 @@ class BaseClient(object):
         if username is None:
             username = input("Username: ")
         if password is None:
-            message = 'Password for {}: '.format(username)
+            message = f'Password for {username}: '
             password = getpass.getpass(message)
 
         self.setActor(username)
@@ -165,8 +169,7 @@ class BaseClient(object):
                    "username": username,
                    "password": password
                    }
-
-        req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
+        req = requests.post(f'{self.oauth_server}/token', data=payload, verify=False)
 
         if req.status_code == 200:
             response = json.loads(req.text)
@@ -174,7 +177,7 @@ class BaseClient(object):
             if token:
                 self.setToken(token)
             elif response.get("oauth_token", None):
-            # Fallback to legacy oauth server
+                # Fallback to legacy oauth server
                 self.setToken(response.get("oauth_token"))
             else:
                 raise AttributeError('No token found in response')
@@ -227,14 +230,16 @@ class MaxClient(BaseClient):
         """
         """
         headers = {}
-        resource_uri = '%s%s' % (self.url, route)
+        resource_uri = f'{self.url}{route}'
         if qs:
-            resource_uri = '%s?%s' % (resource_uri, qs)
+            resource_uri = f'{resource_uri}?{qs}'
         if self.auth_method == 'oauth2':
             headers.update(self.OAuth2AuthHeaders())
             req = requests.head(resource_uri, headers=headers, verify=False)
         elif self.auth_method == 'basic':
-            req = requests.head(resource_uri, auth=self.BasicAuthHeaders(), verify=False)
+            req = requests.head(
+                resource_uri, auth=self.BasicAuthHeaders(),
+                verify=False)
         else:
             raise
 
@@ -250,9 +255,9 @@ class MaxClient(BaseClient):
         """
         """
         headers = {}
-        resource_uri = '%s%s' % (self.url, route)
+        resource_uri = f'{self.url}{route}'
         if qs:
-            resource_uri = '%s?%s' % (resource_uri, qs)
+            resource_uri = f'{resource_uri}?{qs}'
         if self.auth_method == 'oauth2':
             headers.update(self.OAuth2AuthHeaders())
             req = requests.get(resource_uri, headers=headers, verify=False)
@@ -266,7 +271,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print('GET {} - {} - {}'.format(req.status_code, req.content, route))
+            print(f'GET {req.status_code} - {req.content} - {route}')
             response = ''
         return (isOk, req.status_code, response)
 
@@ -274,20 +279,23 @@ class MaxClient(BaseClient):
         """
         """
         headers = {}
-        resource_uri = '%s%s' % (self.url, route)
+        resource_uri = f'{self.url}{route}'
         json_query = json.dumps(query)
 
         if upload_file:
             headers.update(self.OAuth2AuthHeaders())
             files = {'file': ('avatar.png', upload_file)}
-            req = requests.post(resource_uri, headers=headers, files=files, verify=False)
+            req = requests.post(resource_uri, headers=headers,
+                                files=files, verify=False)
         else:
             if self.auth_method == 'oauth2':
                 headers.update(self.OAuth2AuthHeaders())
                 headers.update({'content-type': 'application/json'})
-                req = requests.post(resource_uri, data=json_query, headers=headers, verify=False)
+                req = requests.post(resource_uri, data=json_query,
+                                    headers=headers, verify=False)
             elif self.auth_method == 'basic':
-                req = requests.post(resource_uri, data=json_query, auth=self.BasicAuthHeaders(), verify=False)
+                req = requests.post(resource_uri, data=json_query,
+                                    auth=self.BasicAuthHeaders(), verify=False)
             else:
                 raise
 
@@ -296,7 +304,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print('POST {} - {} - {}'.format(req.status_code, req.content, route))
+            print(f'POST {req.status_code} - {req.content} - {route}')
             response = req.content
 
         return (isOk, req.status_code, response)
@@ -305,14 +313,16 @@ class MaxClient(BaseClient):
         """
         """
         headers = {}
-        resource_uri = '%s%s' % (self.url, route)
+        resource_uri = f'{self.url}{route}'
         json_query = json.dumps(query)
 
         if self.auth_method == 'oauth2':
             headers.update(self.OAuth2AuthHeaders())
-            req = requests.put(resource_uri, data=json_query, headers=headers, verify=False)
+            req = requests.put(resource_uri, data=json_query,
+                               headers=headers, verify=False)
         elif self.auth_method == 'basic':
-            req = requests.put(resource_uri, data=json_query, auth=self.BasicAuthHeaders(), verify=False)
+            req = requests.put(resource_uri, data=json_query,
+                               auth=self.BasicAuthHeaders(), verify=False)
         else:
             raise
 
@@ -321,7 +331,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print('PUT {} - {} - {}'.format(req.status_code, req.content, route))
+            print(f'PUT {req.status_code} - {req.content} - {route}')
             response = ''
 
         return (isOk, req.status_code, response)
@@ -330,15 +340,17 @@ class MaxClient(BaseClient):
         """
         """
         headers = {}
-        resource_uri = '%s%s' % (self.url, route)
+        resource_uri = f'{self.url}{route}'
         json_query = json.dumps(query)
 
         if self.auth_method == 'oauth2':
             headers.update(self.OAuth2AuthHeaders())
             headers.update({'content-type': 'application/json'})
-            req = requests.delete(resource_uri, data=json_query, headers=headers, verify=False)
+            req = requests.delete(resource_uri, data=json_query,
+                                  headers=headers, verify=False)
         elif self.auth_method == 'basic':
-            req = requests.delete(resource_uri, data=json_query, auth=self.BasicAuthHeaders(), verify=False)
+            req = requests.delete(resource_uri, data=json_query,
+                                  auth=self.BasicAuthHeaders(), verify=False)
         else:
             raise
 
@@ -347,7 +359,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print('DELETE {} - {} - {}'.format(req.status_code, req.content, route))
+            print(f'DELETE {req.status_code} - {req.content} - {route}')
             response = req.content
 
         return (isOk, req.status_code, response)
@@ -360,7 +372,8 @@ class MaxClient(BaseClient):
         """
         """
         route = ROUTES['user']['route']
-        rest_params = dict(username=username is not None and username or self.actor['username'])
+        rest_params = dict(
+            username=username if username is not None else self.actor['username'])
 
         (success, code, response) = self.GET(route.format(**rest_params))
         return response
@@ -373,7 +386,7 @@ class MaxClient(BaseClient):
         query = {}
         rest_params = dict(username=username)
         valid_properties = ['displayName']
-        query = dict([(k, v) for k, v in list(kwargs.items()) if k in valid_properties])
+        query = dict([(k, v) for k, v in kwargs.items() if k in valid_properties])
 
         return self.POST(route.format(**rest_params), query)
 
@@ -432,7 +445,9 @@ class MaxClient(BaseClient):
     # ACTIVITIES
     ###########################
 
-    def addActivity(self, content, otype='note', contexts=[], generator=None, username=None):
+    def addActivity(
+            self, content, otype='note', contexts=[],
+            generator=None, username=None):
         """
         """
         route = ROUTES['user_activities']['route']
@@ -448,7 +463,8 @@ class MaxClient(BaseClient):
         if generator:
             query['generator'] = generator
 
-        rest_params = dict(username=username is not None and username or self.actor['username'])
+        rest_params = dict(
+            username=username is not None and username or self.actor['username'])
 
         (success, code, response) = self.POST(route.format(**rest_params), query)
         return (success, code, response)
@@ -510,11 +526,12 @@ class MaxClient(BaseClient):
             It can be invoked as admin, if an username of the actor is supplied.
         """
         route = ROUTES['user_activities']['route']
-        rest_params = dict(username=username if username is not None else self.actor['username'])
+        rest_params = dict(
+            username=username if username is not None else self.actor['username'])
 
         params = {}
         if context:
-            params['qs'] = 'context={}'.format(context)
+            params['qs'] = f'context={context}'
 
         if count:
             (success, code, response) = self.HEAD(route.format(**rest_params), **params)
@@ -530,7 +547,7 @@ class MaxClient(BaseClient):
 
         params = {}
         if limit:
-            params['qs'] = 'limit={}'.format(limit)
+            params['qs'] = f'limit={limit}'
 
         (success, code, response) = self.GET(route.format(**rest_params), **params)
         return response
@@ -543,7 +560,7 @@ class MaxClient(BaseClient):
 
         params = {}
         if limit:
-            params['qs'] = 'limit={}'.format(limit)
+            params['qs'] = f'limit={limit}'
 
         (success, code, response) = self.GET(route.format(**rest_params), **params)
         return response
@@ -596,7 +613,8 @@ class MaxClient(BaseClient):
     # SUBSCRIPTIONS & CONTEXTS
     ###########################
 
-    def addContext(self, param_value, displayName, permissions=None, context_type='context', param_name='url'):
+    def addContext(self, param_value, displayName, permissions=None,
+                   context_type='context', param_name='url'):
         """
         """
         route = ROUTES['contexts']['route']
@@ -644,7 +662,8 @@ class MaxClient(BaseClient):
                                  url=url,
                                  ),
                      )
-        rest_params = dict(username=username is not None and username or self.actor['username'])
+        rest_params = dict(
+            username=username is not None and username or self.actor['username'])
 
         (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
@@ -655,8 +674,9 @@ class MaxClient(BaseClient):
         route = ROUTES['subscription']['route']
         context_hash = sha1(url).hexdigest()
 
-        rest_params = dict(username=username if username is not None else self.actor['username'],
-                           hash=context_hash)
+        rest_params = dict(
+            username=username if username is not None else self.actor['username'],
+            hash=context_hash)
 
         (success, code, response) = self.DELETE(route.format(**rest_params))
         return response
@@ -688,9 +708,9 @@ class MaxClient(BaseClient):
         route = ROUTES['context_user_permission']['route']
         context_hash = sha1(url).hexdigest()
 
-        rest_params = dict(username=username is not None and username or self.actor['username'],
-                           hash=context_hash,
-                           permission=permission)
+        rest_params = dict(
+            username=username is not None and username or self.actor['username'],
+            hash=context_hash, permission=permission)
 
         (success, code, response) = self.PUT(route.format(**rest_params))
         return response
@@ -701,9 +721,9 @@ class MaxClient(BaseClient):
         route = ROUTES['context_user_permission']['route']
         context_hash = sha1(url).hexdigest()
 
-        rest_params = dict(username=username is not None and username or self.actor['username'],
-                           hash=context_hash,
-                           permission=permission)
+        rest_params = dict(
+            username=username is not None and username or self.actor['username'],
+            hash=context_hash, permission=permission)
 
         (success, code, response) = self.DELETE(route.format(**rest_params))
         return response
@@ -780,7 +800,7 @@ class MaxClient(BaseClient):
 
     def getSecurity(self):
         route = ROUTES['admin_security']['route']
-        resource_uri = '%s%s' % (self.url, route)
+        resource_uri = f'{self.url}{route}'
         req = requests.get(resource_uri, verify=False)
         isOk = req.status_code == 200
         isJson = 'application/json' in req.headers.get('content-type', '')

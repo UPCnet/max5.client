@@ -56,7 +56,7 @@ class Resource(object):
         return '/'.join([self.parent.path, self._name])
 
     def defaults(self, method):
-        default_name = '{}_{}'.format(self.route, method)
+        default_name = f'{self.route}_{method}'
         return self.client.__defaults__.get(default_name, {})
 
     @property
@@ -82,7 +82,7 @@ class Resource(object):
             # The resulting function will be the one that the client will fill
             # with request parameters
             return partial(self.client._make_request_, self, attr)
-        return AttributeError("Resource not found {}".format(attr))
+        raise AttributeError(f"Resource not found {attr}")
 
 
 class ResourceCollection(Resource):
@@ -90,7 +90,7 @@ class ResourceCollection(Resource):
     """
 
     def __repr__(self):
-        return '<Lazy Resource Collection @ "{}">'.format(self.path)
+        return f'<Lazy Resource Collection @ "{self.path}">'
 
     def __getitem__(self, key):
         """
@@ -135,15 +135,17 @@ class ResourceItem(Resource):
             There should be only one available {varname} for each level, so first one is
             returned, otherwise an exception is raised.
         """
-        resource_wrappers = [a for a in list(self.parent.routes.keys()) if re.match(r'{.*?}', a)]
+        resource_wrappers = [a for a in list(
+            self.parent.routes.keys()) if re.match(r'{.*?}', a)]
         if resource_wrappers:
             if len(resource_wrappers) != 1:
-                raise KeyError("Resource collection {} has more than one wrapper defined".format(self.parent.path))
+                raise KeyError(
+                    f"Resource collection {self.parent.path} has more than one wrapper defined")
             return resource_wrappers[0]
-        raise KeyError("<Resource Item {}".format(self.parent.path))
+        raise KeyError(f"<Resource Item {self.parent.path}>")
 
     def __repr__(self):
-        return '<Lazy Resource Item @ {}>'.format(self.path)
+        return f'<Lazy Resource Item @ {self.path}>'
 
     def __getitem__(self, key):
         """
@@ -176,13 +178,15 @@ class MaxClient(BaseClient):
     def response_content(self, response):
         return response.content
 
-    def _make_request_(self, resource, method_name, default_filename='file', data=None, qs=None, **kwargs):
+    def _make_request_(
+            self, resource, method_name, default_filename='file', data=None, qs=None, **
+            kwargs):
         """
             Prepare call parameters  based on method_name, and
             make the appropiate call using requests.
             Responses with an error will raise an exception
         """
-        #extract file uploads from kwargs
+        # extract file uploads from kwargs
         file_uploads = []
         for k, v in list(kwargs.items()):
             is_upload_file = re.match(r'^upload_file_?(\w*)$', k)
@@ -213,7 +217,7 @@ class MaxClient(BaseClient):
         # Construct uri with optional query string
         uri = resource.uri
         if qs is not None:
-            uri = '{}?{}'.format(uri, urlencode(qs))
+            uri = f'{uri}?{urlencode(qs)}'
 
         # Set default requests parameters
         headers = {}
@@ -232,9 +236,12 @@ class MaxClient(BaseClient):
                     # Get name of open file, excluding path part,
                     # fallback to default if object has no name attribute (i.e StringIO)
                     # Finally feed file contents into request arguments
-                    object_filename = getattr(file_upload['file'], 'name', default_filename)
+                    object_filename = getattr(
+                        file_upload['file'],
+                        'name', default_filename)
                     filename = re.match(r'^.*?/?([^\/]*$)', object_filename).groups()[0]
-                    method_kwargs['files'][file_upload['form_file_id']] = (filename, file_upload['file'].read())
+                    method_kwargs['files'][file_upload['form_file_id']] = (
+                        filename, file_upload['file'].read())
                 if query:
                     method_kwargs['data'] = {'json_data': json.dumps(query)}
 
@@ -268,16 +275,24 @@ class MaxClient(BaseClient):
                     error_message = "{error}: {error_description}".format(**json_error)
                     raise RequestError(404, error_message)
                 else:
-                    restricted_permissions = re.search(r"restricted permissions to = (\w+)", self.response_content(response), re.IGNORECASE)
+                    restricted_permissions = re.search(
+                        r"restricted permissions to = (\w+)",
+                        self.response_content(response),
+                        re.IGNORECASE)
                     if restricted_permissions:
-                        raise RequestError(404, "Not Implemented for current user role: {} restricted to {}".format(resource.uri, restricted_permissions.groups()[0]))
+                        raise RequestError(
+                            404,
+                            f"Not Implemented for current user role: {resource.uri} restricted to {restricted_permissions.groups()[0]}")
                     else:
-                        raise RequestError(404, "Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
+                        raise RequestError(
+                            404,
+                            f"Not Implemented: {resource.uri} doesn't accept method {method_name}")
 
         # Some proxy lives between max and the client, and something went wrong
         # on the backend site, probably max is stopped
         elif response.status_code in [502]:
-            raise RequestError(502, "Server {} responded with 502. Is max running?".format(self.url))
+            raise RequestError(
+                502, f"Server {self.url} responded with 502. Is max running?")
 
         # Successfull requests gets the json response in return
         # except HEAD ones, that gets the count
@@ -298,7 +313,7 @@ class MaxClient(BaseClient):
                 json_error = json.loads(self.response_content(response))
                 error_message = "{error}: {error_description}".format(**json_error)
             except:
-                error_message = "Server responded with error {}".format(response.status_code)
+                error_message = f"Server responded with error {response.status_code}"
             raise RequestError(response.status_code, error_message)
 
     @property
@@ -333,4 +348,4 @@ class MaxClient(BaseClient):
         """
         if attr in list(self.routes.keys()):
             return ResourceCollection(self, attr)
-        return AttributeError('Resource not found "{}"'.format(attr))
+        raise AttributeError(f'Resource not found "{attr}"')

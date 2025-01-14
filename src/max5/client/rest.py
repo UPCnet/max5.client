@@ -8,7 +8,7 @@ from max5.client.resources import RESOURCES as ROUTES
 from max5.client.utils import RUDict
 from max5.client.utils import expand
 from max5.client.utils import patch_send
-from urllib import urlencode
+from urllib.parse import urlencode
 
 import json
 import re
@@ -75,7 +75,7 @@ class Resource(object):
             Returns a ResourceCollection  if the accessed attribute mathes
             a valid point in the current routes map
         """
-        if attr in self.routes.keys():
+        if attr in list(self.routes.keys()):
             return ResourceCollection(self, attr)
         elif attr in ['get', 'post', 'put', 'delete', 'head']:
             # Returns a prefilled _make_request_ with the resource and method
@@ -135,7 +135,7 @@ class ResourceItem(Resource):
             There should be only one available {varname} for each level, so first one is
             returned, otherwise an exception is raised.
         """
-        resource_wrappers = [a for a in self.parent.routes.keys() if re.match(r'{.*?}', a)]
+        resource_wrappers = [a for a in list(self.parent.routes.keys()) if re.match(r'{.*?}', a)]
         if resource_wrappers:
             if len(resource_wrappers) != 1:
                 raise KeyError("Resource collection {} has more than one wrapper defined".format(self.parent.path))
@@ -184,7 +184,7 @@ class MaxClient(BaseClient):
         """
         #extract file uploads from kwargs
         file_uploads = []
-        for k, v in kwargs.items():
+        for k, v in list(kwargs.items()):
             is_upload_file = re.match(r'^upload_file_?(\w*)$', k)
             if is_upload_file:
                 captured_form_file_id = is_upload_file.groups()[0]
@@ -255,7 +255,7 @@ class MaxClient(BaseClient):
                 response_text = self.response_content(response)
                 json.loads(response_text)
                 if self.debug:
-                    print response_text
+                    print(response_text)
                 return None
             except ValueError:
                 # In case that we are accessing to an non existing resource, not
@@ -306,7 +306,7 @@ class MaxClient(BaseClient):
         return self
 
     def getRoute(self, path):
-        for route_name, route in self.__routes__.items():
+        for route_name, route in list(self.__routes__.items()):
             if path == route['route']:
                 return route
         return {}
@@ -318,7 +318,7 @@ class MaxClient(BaseClient):
             level by level.
         """
         routes = {}
-        for route_name, route in self.__routes__.items():
+        for route_name, route in list(self.__routes__.items()):
             parts = route['route'].split('/')[1:]
             last_path = routes
             for part in parts:
@@ -331,6 +331,6 @@ class MaxClient(BaseClient):
             Returns a ResourceCollection  if the accessed attribute mathes
             a valid point in the current routes map
         """
-        if attr in self.routes.keys():
+        if attr in list(self.routes.keys()):
             return ResourceCollection(self, attr)
         return AttributeError('Resource not found "{}"'.format(attr))

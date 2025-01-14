@@ -1,4 +1,4 @@
-import httplib
+import http.client
 import re
 
 
@@ -41,7 +41,7 @@ def expand(kwargs):
         {'key': {'subkey': 'value'}}
     """
     expanded = {}
-    for key, value in kwargs.items():
+    for key, value in list(kwargs.items()):
         subkeys = re.findall(r'([^_\.]+)[_$]?', key)
         leaf = expanded
         for subkey in subkeys[:-1]:
@@ -54,10 +54,10 @@ def patch_send():
     """
         PATCH for allowing raw debugging of requests' requests
     """
-    old_send = httplib.HTTPConnection.send
+    old_send = http.client.HTTPConnection.send
 
     def new_send(self, data):
-        print '\n' + data + '\n'
+        print('\n' + data + '\n')
         return old_send(self, data)
 
-    httplib.HTTPConnection.send = new_send
+    http.client.HTTPConnection.send = new_send

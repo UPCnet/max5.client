@@ -1,7 +1,7 @@
 from hashlib import sha1
 import requests
 import json
-from resources import RESOURCES as ROUTES
+from .resources import RESOURCES as ROUTES
 import getpass
 
 DEFAULT_MAX_SERVER = 'http://localhost:8081'
@@ -146,7 +146,7 @@ class BaseClient(object):
 
     def login(self, username=None, password=None):
         if username is None:
-            username = raw_input("Username: ")
+            username = input("Username: ")
         if password is None:
             message = 'Password for {}: '.format(username)
             password = getpass.getpass(message)
@@ -242,7 +242,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = int(req.headers.get('X-totalItems', '0'))
         else:
-            print req.status_code
+            print(req.status_code)
             response = ''
         return (isOk, req.status_code, response)
 
@@ -266,7 +266,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print 'GET {} - {} - {}'.format(req.status_code, req.content, route)
+            print('GET {} - {} - {}'.format(req.status_code, req.content, route))
             response = ''
         return (isOk, req.status_code, response)
 
@@ -296,7 +296,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print 'POST {} - {} - {}'.format(req.status_code, req.content, route)
+            print('POST {} - {} - {}'.format(req.status_code, req.content, route))
             response = req.content
 
         return (isOk, req.status_code, response)
@@ -321,7 +321,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print 'PUT {} - {} - {}'.format(req.status_code, req.content, route)
+            print('PUT {} - {} - {}'.format(req.status_code, req.content, route))
             response = ''
 
         return (isOk, req.status_code, response)
@@ -347,7 +347,7 @@ class MaxClient(BaseClient):
         if isOk:
             response = json.loads(req.content) if isJson else None
         else:
-            print 'DELETE {} - {} - {}'.format(req.status_code, req.content, route)
+            print('DELETE {} - {} - {}'.format(req.status_code, req.content, route))
             response = req.content
 
         return (isOk, req.status_code, response)
@@ -373,7 +373,7 @@ class MaxClient(BaseClient):
         query = {}
         rest_params = dict(username=username)
         valid_properties = ['displayName']
-        query = dict([(k, v) for k, v in kwargs.items() if k in valid_properties])
+        query = dict([(k, v) for k, v in list(kwargs.items()) if k in valid_properties])
 
         return self.POST(route.format(**rest_params), query)
 

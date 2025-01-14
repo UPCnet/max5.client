@@ -1,7 +1,7 @@
 from max import main
 from max5.client.client.rest import MaxClient as RestClient
 from webtest.app import TestApp
-from StringIO import StringIO
+from io import StringIO
 
 
 class RequesterApp(TestApp):

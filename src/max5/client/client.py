@@ -406,7 +406,7 @@ class MaxClient(BaseClient):
         route = ROUTES['context']['route']
 
         query = properties
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
         rest_params = dict(hash=context_hash)
 
         return self.PUT(route.format(**rest_params), query)
@@ -417,7 +417,7 @@ class MaxClient(BaseClient):
         route = ROUTES['context_tags']['route']
 
         query = tags
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
         rest_params = dict(hash=context_hash)
 
         return self.PUT(route.format(**rest_params), query)
@@ -428,7 +428,7 @@ class MaxClient(BaseClient):
         route = ROUTES['context_tag']['route']
 
         query = {}
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
         rest_params = dict(hash=context_hash, tag=tag)
 
         return self.DELETE(route.format(**rest_params), query)
@@ -481,7 +481,7 @@ class MaxClient(BaseClient):
         if generator:
             query['generator'] = generator
 
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
         rest_params = dict(hash=context_hash)
 
         (success, code, response) = self.POST(route.format(**rest_params), query)
@@ -636,7 +636,7 @@ class MaxClient(BaseClient):
         """
         route = ROUTES['context']['route']
 
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
         rest_params = dict(hash=context_hash)
 
         (success, code, response) = self.GET(route.format(**rest_params))
@@ -647,7 +647,7 @@ class MaxClient(BaseClient):
         """
         route = ROUTES['context']['route']
 
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
         rest_params = dict(hash=context_hash)
 
         (success, code, response) = self.DELETE(route.format(**rest_params))
@@ -672,7 +672,7 @@ class MaxClient(BaseClient):
         """ Takes directly the url and calculate the hash
         """
         route = ROUTES['subscription']['route']
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
 
         rest_params = dict(
             username=username if username is not None else self.actor['username'],
@@ -685,7 +685,7 @@ class MaxClient(BaseClient):
         """
         """
         route = ROUTES['context_subscriptions']['route']
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
 
         rest_params = dict(hash=context_hash)
 
@@ -706,7 +706,7 @@ class MaxClient(BaseClient):
         """
         """
         route = ROUTES['context_user_permission']['route']
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
 
         rest_params = dict(
             username=username is not None and username or self.actor['username'],
@@ -719,7 +719,7 @@ class MaxClient(BaseClient):
         """
         """
         route = ROUTES['context_user_permission']['route']
-        context_hash = sha1(url).hexdigest()
+        context_hash = sha1(url.encode('utf-8')).hexdigest()
 
         rest_params = dict(
             username=username is not None and username or self.actor['username'],

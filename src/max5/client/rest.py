@@ -38,7 +38,7 @@ class ResourceVariableWrappers(object):
         if re.match(r'^[0-9a-f]{40}$', value):
             return value
         else:
-            return sha1(value).hexdigest()
+            return sha1(value.encode('utf-8')).hexdigest()
 
 
 class Resource(object):
